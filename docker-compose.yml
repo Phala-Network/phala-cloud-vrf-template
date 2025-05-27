@@ -1,0 +1,11 @@
+services:
+  app:
+    image: mondaylord/vrf-offchain-dstack-0.3.6-amd64:latest
+    container_name: app
+    volumes:
+      - /var/run/tappd.sock:/var/run/tappd.sock
+    ports:
+      - "3000:3000" 
+    environment:
+      - RPC_URL=${RPC_URL}
+      - CONTRACT_ADDRESS=${CONTRACT_ADDRESS}

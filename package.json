@@ -1,0 +1,33 @@
+{
+  "name": "vrf-viem",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.3.0",
+    "@phala/dstack-sdk": "^0.1.11",
+    "abitype": "^1.0.8",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.19",
+    "@vitest/coverage-v8": "^3.1.4",
+    "anvil": "^0.0.6",
+    "elliptic": "^6.6.1",
+    "ethers": "^6.14.1",
+    "js-sha3": "^0.9.3",
+    "solc": "^0.8.20",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3",
+    "viem": "^2.29.4",
+    "vitest": "^3.1.4"
+  }
+}
