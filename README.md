@@ -4,18 +4,13 @@ A Verifiable Random Function (VRF) implementation leveraging Trusted Execution E
 
 ## Key Advantages 🚀
 ### 1. **Cryptographically Verifiable Randomness**
-- **TEE-Secured Computation**: Generation process uses a signing private key created and stored exclusively within the TEE enclave
-- **On-chain Verification**: Every random output is signed by TEE private key, verifiable through the corresponding public key on-chain
-- **End-to-End Security**: From secure enclave key generation to Ethereum-native signature validation
+- **TEE-Secured Computation**: Every random output is signed by a TEE-protected private key and can be independently verified on-chain through signature.
 ### 2. **Blazing Fast Performance**
-- **Short Time Finality**: Complete request-to-fulfillment cycle in just 2 blocks (4 seconds) on Base Sepolia, and 2-4 blocks on Abstract.
-- **Real-Time Responsiveness**: Event-driven architecture ensures sub-second processing latency
+- **Response as Flash**: Our event-driven architecture and TEE-derived-key mechanism ensures 2-4 seconds latency end-to-end.
 ### 3. **One-Click Deployment**
-- **Phala Cloud Native**: Fully scripted deployment via Docker Compose
-- **Cost-Efficient**: Optimized gas usage and TEE resource management
-- **Chain-Agnostic**: Modular design supports EVM chains and L2s
+- **Phala Cloud Native**: We already built the template. Visit the [template](https://cloud.phala.network/templates/vrf) to try it!
 ### 4. **Production-Ready Infrastructure**
-- **Mainnet-Proven**: Audited implementation supporting Base Sepolia & Sepolia testnets
+- **Mainnet-Proven**: Audited implementation supporting Base Sepolia & Sepolia & Abstract testnets
 - **Live Demo**: [Video walkthrough](https://drive.google.com/file/d/1bp9ABKSiqz092Jz5e9QzmFlXBF9UEKM_/view?usp=sharing) demonstrating end-to-end workflow
 
 The system comprises:
