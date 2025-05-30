@@ -18,7 +18,7 @@ const initWallet = async () => {
     const client = new TappdClient();
     await client.info();
     const testDeriveKey = await client.deriveKey("wallet");
-    const key = Array.from(testDeriveKey.asUint8Array(32)).map(b => b.toString(16).padStart(2, '0')).join('')
+    const key = Array.from(testDeriveKey.asUint8Array().slice(-32)).map(b => b.toString(16).padStart(2, '0')).join('')
     const walletSecretKey = key.startsWith('0x') ? key : `0x${key}`;
     const teeWallet = new ethers.Wallet(walletSecretKey, provider); // generate a random wallet in TEE
     return { teeWallet };
@@ -171,7 +171,7 @@ async function initKeys(): Promise<string> {
     const client = new TappdClient();
     await client.info();
     const testDeriveKey = await client.deriveKey("ethereum");
-    const key = Array.from(testDeriveKey.asUint8Array(32)).map(b => b.toString(16).padStart(2, '0')).join('')
+    const key = Array.from(testDeriveKey.asUint8Array().slice(-32)).map(b => b.toString(16).padStart(2, '0')).join('')
     return key.startsWith('0x') ? key : `0x${key}`;
 }
 
