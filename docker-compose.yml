@@ -9,3 +9,4 @@ services:
     environment:
       - RPC_URL=${RPC_URL}
       - CONTRACT_ADDRESS=${CONTRACT_ADDRESS}
+      - UPDATE_SECRET_KEY_TOKEN=${UPDATE_SECRET_KEY_TOKEN:-}

@@ -29,7 +29,7 @@ sequenceDiagram
   
     Offchain-VRF->>Offchain-VRF: Randomly generates wallet keypair (wallet_sk, wallet_address)
     Offchain-VRF->>Offchain-VRF: TEE generates signing keypair (signing_sk, signing_pubkey)
-    ContractOwner->>Offchain-VRF: GET /address
+    ContractOwner->>Offchain-VRF: GET /get_wallet
     Offchain-VRF->>ContractOwner: Return wallet_address
     ContractOwner->>Contract: setTrustedThirdParty(wallet_address)
     ContractOwner->>Offchain-VRF: GET /pubkey
@@ -102,6 +102,7 @@ sequenceDiagram
 |----------|--------|-------------|
 | `/get_wallet` | GET | Returns TEE's operational wallet address |
 | `/pubkey` | GET | Retrieves offline public key for VRF verification |
+| `/update-secretkey` | GET | Optional protected key-rotation endpoint. Disabled unless `UPDATE_SECRET_KEY_TOKEN` is set; callers must provide `x-update-secret-key-token`. |
 
 ## Development Setup
 
@@ -119,7 +120,8 @@ cd phala-cloud-vrf
 2. Configure environment:
 ```bash
 cp env.local.example .env.local
-# Set Ethereum RPC and contract address
+# Set an EVM RPC URL and deployed VRF coordinator contract address.
+# Optional: set UPDATE_SECRET_KEY_TOKEN to enable protected HTTP key rotation.
 ```
 
 3. Download and run TEE simulator:
@@ -141,7 +143,9 @@ Use the contract address and localhost:3000 and the random seed to run `request.
 
 ## Phala Cloud Deployment
 Use `docker-compose.yml` to deploy on Phala Cloud.
-Set ENV `RPC_URL` and `CONTRACT_ADDRESS` to setup.
+Set ENV `RPC_URL` and `CONTRACT_ADDRESS` to setup. Use a real EVM RPC URL for the target network and a valid deployed VRF coordinator contract address. The app validates these values at startup and exits with a clear error when they are missing or malformed.
+
+The `/update-secretkey` endpoint changes the VRF signing key and should not be public. It is disabled by default. Only set `UPDATE_SECRET_KEY_TOKEN` if you need HTTP key rotation, and call the endpoint with the `x-update-secret-key-token` header.
 Then use contract address and container network ip and the random seed to run `request.ts` to test the VRF workflow.
 
 > You can also click the button below!

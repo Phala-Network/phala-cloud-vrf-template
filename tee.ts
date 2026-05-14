@@ -13,6 +13,22 @@ export const dynamic = 'force-dynamic'
 // --------------------- Configuration ---------------------
 const RPC_URL = process.env.RPC_URL; // Ethereum RPC URL, set through environment variables
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS; // VRFCoordinator contract address, set through environment variables
+const UPDATE_SECRET_KEY_TOKEN = process.env.UPDATE_SECRET_KEY_TOKEN;
+
+if (!RPC_URL) {
+    throw new Error('RPC_URL is required');
+}
+
+try {
+    new URL(RPC_URL);
+} catch {
+    throw new Error('RPC_URL must be a valid URL');
+}
+
+if (!CONTRACT_ADDRESS || !ethers.isAddress(CONTRACT_ADDRESS)) {
+    throw new Error('CONTRACT_ADDRESS must be a valid EVM contract address');
+}
+
 const provider = new ethers.JsonRpcProvider(RPC_URL);
 const initWallet = async () => {
     const client = new TappdClient();
@@ -91,6 +107,12 @@ app.get('/pubkey', async (req, res) => {
 
 app.get('/update-secretkey', async (req, res) => {
     try {
+        if (!UPDATE_SECRET_KEY_TOKEN) {
+            return res.status(404).json({ error: 'Not found' });
+        }
+        if (req.header('x-update-secret-key-token') !== UPDATE_SECRET_KEY_TOKEN) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
         updateSecretKey();
         res.json({
             status: 'success',
@@ -107,27 +129,34 @@ app.get('/update-secretkey', async (req, res) => {
     }
 });
 
+function startEventWatcher() {
+    publicClient.watchContractEvent({
+        address: CONTRACT_ADDRESS as `0x${string}`,
+        abi: VRFCoordinatorABI,
+        eventName: 'RequestQueued',
+        onLogs: async (logs: Log[]) => {
+            for (const log of logs) {
+                try {
+                    const { requestId, seed } = (log as any).args as RequestQueuedEvent;
+                    await processRequest(requestId, seed);
+                } catch (error) {
+                    console.error('Failed to process RequestQueued event:', error);
+                }
+            }
+        }
+    });
+}
+
 // Wrap async initialization in immediately executed function
 (async () => {
     await initialize();
     app.listen(3000, () => {
         console.log('Key API server running on port 3000');
     });
+    startEventWatcher();
 })().catch(error => {
     console.error('Error in initialization process:', error);
     process.exit(1);
-});
-
-publicClient.watchContractEvent({
-    address: CONTRACT_ADDRESS as `0x${string}`,
-    abi: VRFCoordinatorABI,
-    eventName: 'RequestQueued',
-    onLogs: async (logs: Log[]) => {
-        for (const log of logs) {
-            const { requestId, caller, seed } = (log as any).args as RequestQueuedEvent;
-            await processRequest(requestId, seed);
-        }
-    }
 });
 
 // --------------------- Process Request ---------------------
